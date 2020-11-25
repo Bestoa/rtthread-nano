@@ -56,9 +56,6 @@ void riscv_ecall_handler(int vector, void *param)
  */
 void rt_hw_board_init()
 {
-    
-
-
     /* Call components board initial (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
     rt_components_board_init();
@@ -67,7 +64,6 @@ void rt_hw_board_init()
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
     rt_system_heap_init(rt_heap_begin_get(), rt_heap_end_get());
 #endif
-
 
     /* System time Configuration */
     _riscv_time_config(SYSTEM_CORE_CLOCK / RT_TICK_PER_SECOND);

@@ -5,6 +5,8 @@
 
 #include <rtthread.h>
 
+#define RT_USING_FINSH
+
 #if defined(__CC_ARM) || defined(__CLANG_ARM)
 #include "RTE_Components.h"
 

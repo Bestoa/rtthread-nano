@@ -1,13 +1,8 @@
-# CMake 最低版本号要求
-
 cmake_minimum_required (VERSION 3.1)
-
-
 
 ENABLE_LANGUAGE(ASM)
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR risc_v)
-
 
 set(tools /opt/riscv32i)
 set(LINKR_FILE ../src/sections.ld)
@@ -28,22 +23,15 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 #LDFLAGS = -ffunction-sections -Wl,--gc-sections
 #LDLIBS =  -ffunction-sections -fdata-sections
 
-
-
-
-
-
 set(CMAKE_C_FLAGS "-MD -Os -Wall" )
-
 
 set(CMAKE_ASM_FLAGS "-nostdlib" )
 set(LD_FLAGS "-ffunction-sections  -nostartfiles -Wl,--gc-sections")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(ENABLE_EXPORTS  True)
-# 项目信息
 
-set(PROJECT_NAME RISC_V)
+set(PROJECT_NAME RTT_PICORV32)
 
 set(BIN_TARGET ${PROJECT_NAME}.bin)
 set(HEX_TARGET ${PROJECT_NAME}.hex)
@@ -52,40 +40,42 @@ set(LSS_TARGET ${PROJECT_NAME}.asm)
 set(TMP_TARGET ${PROJECT_NAME}.tmp)
 
 set(RISCV_SRC 
-   ../src/start.S
-   ../board.c
-   ../src/main.c
-  ../../../libcpu/risc-v/picorv32/interrupt_gcc.S
-  ../../../libcpu/risc-v/picorv32/interrupt.c
-  ../../../libcpu/risc-v/picorv32/context_gcc.S
-  ../../../libcpu/risc-v/picorv32/cpuport.c
-  ../../../src/clock.c
-   ../../../src/components.c
-   ../../../src/cpu.c
-   ../../../src/idle.c
-   ../../../src/ipc.c
-   ../../../src/irq.c
-   ../../../src/kservice.c
-   ../../../src/mem.c
-   ../../../src/memheap.c
-   ../../../src/mempool.c
-   ../../../src/object.c
-   ../../../src/scheduler.c
-   ../../../src/slab.c
-   ../../../src/thread.c
-   ../../../src/timer.c
+   src/start.S
+   board.c
+   src/main.c
+   ../../libcpu/risc-v/picorv32/interrupt_gcc.S
+   ../../libcpu/risc-v/picorv32/interrupt.c
+   ../../libcpu/risc-v/picorv32/context_gcc.S
+   ../../libcpu/risc-v/picorv32/cpuport.c
+   ../../components/finsh/cmd.c
+   ../../components/finsh/msh.c
+   ../../components/finsh/shell.c
+   ../../src/clock.c
+   ../../src/components.c
+   ../../src/cpu.c
+   ../../src/idle.c
+   ../../src/ipc.c
+   ../../src/irq.c
+   ../../src/kservice.c
+   ../../src/mem.c
+   ../../src/memheap.c
+   ../../src/mempool.c
+   ../../src/object.c
+   ../../src/scheduler.c
+   ../../src/slab.c
+   ../../src/thread.c
+   ../../src/timer.c
    )
 # create binary & hex files and show size of resulting firmware image
 
 project (${PROJECT_NAME} )
 
-include_directories(../../../libcpu/risc-v/picorv32
-                    ../
-                    ../../../include/
-                    ../../../include/libc/
+include_directories(../../libcpu/risc-v/picorv32
+                    ../../include/
+                    ../../components/finsh/
+                    ../../include/libc/
                     ./)
 
-# 指定生成目标  
 add_executable(${PROJECT_NAME}.elf ${RISCV_SRC})
 
 target_link_libraries(${PROJECT_NAME}.elf PRIVATE  -T${LINKR_FILE} ${LD_FLAGS},-Map=${MAP_TARGET})
@@ -97,5 +87,4 @@ add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
         COMMAND ${CMAKE_OBJDUMP} -S ${PROJECT_NAME}.elf > ${LSS_TARGET}
         COMMAND echo "${PROJECT_NAME}.elf"
         COMMENT "Generating ${HEX_TARGET}, ${BIN_TARGET}")
-
 
