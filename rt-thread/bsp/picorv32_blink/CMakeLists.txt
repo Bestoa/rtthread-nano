@@ -2,10 +2,11 @@ cmake_minimum_required (VERSION 3.1)
 
 ENABLE_LANGUAGE(ASM)
 set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR risc_v)
+set(CMAKE_SYSTEM_PROCESSOR riscv)
+SET(CMAKE_CROSSCOMPILING 1)
 
 set(tools /opt/riscv32i)
-set(LINKR_FILE ../src/sections.ld)
+set(LINKR_FILE ../drivers/linker_scripts/link.lds)
 set(CMAKE_ASM_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
 set(CMAKE_C_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/riscv32-unknown-elf-g++)
@@ -16,12 +17,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-
-#CXXFLAGS = -MD -Os -Wall -std=c++11
-#CCFLAGS = -MD -Os -Wall
-#LDFLAGS = -Wl,--gc-sections,--no-relax
-#LDFLAGS = -ffunction-sections -Wl,--gc-sections
-#LDLIBS =  -ffunction-sections -fdata-sections
 
 set(CMAKE_C_FLAGS "-MD -Os -Wall" )
 
@@ -40,9 +35,9 @@ set(LSS_TARGET ${PROJECT_NAME}.asm)
 set(TMP_TARGET ${PROJECT_NAME}.tmp)
 
 set(RISCV_SRC 
-   src/start.S
-   board.c
-   src/main.c
+   libraries/start.S
+   drivers/board.c
+   applications/main.c
    ../../libcpu/risc-v/picorv32/interrupt_gcc.S
    ../../libcpu/risc-v/picorv32/interrupt.c
    ../../libcpu/risc-v/picorv32/context_gcc.S
@@ -66,9 +61,13 @@ set(RISCV_SRC
    ../../src/thread.c
    ../../src/timer.c
    )
+
 # create binary & hex files and show size of resulting firmware image
 
-project (${PROJECT_NAME} )
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+
+project (${PROJECT_NAME})
 
 include_directories(../../libcpu/risc-v/picorv32
                     ../../include/
@@ -80,10 +79,14 @@ add_executable(${PROJECT_NAME}.elf ${RISCV_SRC})
 
 target_link_libraries(${PROJECT_NAME}.elf PRIVATE  -T${LINKR_FILE} ${LD_FLAGS},-Map=${MAP_TARGET})
 
+# Remove option -rdynamic which is a bug
+add_custom_command(TARGET ${PROJECT_NAME}.elf PRE_BUILD
+        COMMAND sed -i 's/-rdynamic//g' CMakeFiles/${PROJECT_NAME}.elf.dir/link.txt
+)
+
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-        COMMAND echo "${PROJECT_NAME}.elf"
         COMMAND ${CMAKE_OBJCOPY} -Obinary ${PROJECT_NAME}.elf ${BIN_TARGET}
         COMMAND ${CMAKE_OBJCOPY} -O verilog ${PROJECT_NAME}.elf ${TMP_TARGET}
         COMMAND ${CMAKE_OBJDUMP} -S ${PROJECT_NAME}.elf > ${LSS_TARGET}
-        COMMAND echo "${PROJECT_NAME}.elf"
-        COMMENT "Generating ${HEX_TARGET}, ${BIN_TARGET}")
+        COMMENT "Generating ${HEX_TARGET}, ${BIN_TARGET}"
+)
