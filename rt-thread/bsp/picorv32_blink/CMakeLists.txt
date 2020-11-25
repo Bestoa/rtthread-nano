@@ -31,7 +31,7 @@ set(LD_FLAGS "-ffunction-sections  -nostartfiles -Wl,--gc-sections")
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(ENABLE_EXPORTS  True)
 
-set(PROJECT_NAME RTT_PICORV32)
+set(PROJECT_NAME rt-thread)
 
 set(BIN_TARGET ${PROJECT_NAME}.bin)
 set(HEX_TARGET ${PROJECT_NAME}.hex)
@@ -87,4 +87,3 @@ add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
         COMMAND ${CMAKE_OBJDUMP} -S ${PROJECT_NAME}.elf > ${LSS_TARGET}
         COMMAND echo "${PROJECT_NAME}.elf"
         COMMENT "Generating ${HEX_TARGET}, ${BIN_TARGET}")
-

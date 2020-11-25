@@ -7,6 +7,7 @@
  * Date           Author       Notes
  * 2018/10/01     Bernard      The first version
  * 2020-06-06     YuZhaorong   add PicoRV32    
+ * 2020-11-25     Wu Han       change code style to en    
  */
 
 #include <rthw.h>
@@ -43,7 +44,6 @@ void rt_hw_interrupt_init(void)
        /* Enable machine external interrupts. */
 }
 
-
 /**
  * This function will mask a interrupt.
  * @param vector the interrupt number
@@ -58,7 +58,6 @@ void rt_hw_interrupt_mask(int vector)
         irq_level |= 0x01<< vector; 
         rt_hw_interrupt_enable(irq_level); 
     }
-
 }
 
 /**
@@ -105,8 +104,6 @@ rt_isr_handler_t rt_hw_interrupt_install(int vector, rt_isr_handler_t handler,
     return old_handler;
 }
 
-
-
 unsigned int *irq(unsigned int *regs, unsigned int irqs)
 {
     int int_num;
@@ -123,6 +120,3 @@ unsigned int *irq(unsigned int *regs, unsigned int irqs)
     }
 	return regs;
 }
-
-
-

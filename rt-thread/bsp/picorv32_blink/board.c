@@ -5,7 +5,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2020-06-09     YuZhaorong        the first version
+ * 2020-06-09     YuZhaorong   the first version
  */
  
 #include <stdint.h>
@@ -45,12 +45,13 @@ void riscv_timer_handler(int vector, void *param)
 {
     riscv_timer(sys_timer_ticks);
     rt_tick_increase();
-
 }
+
 void riscv_ecall_handler(int vector, void *param)
 {
 
 }
+
 /**
  * This function will initial your board.
  */
@@ -73,5 +74,3 @@ void rt_hw_board_init()
     rt_hw_interrupt_install(ECALL_IRQ_VECTOR,riscv_ecall_handler,RT_NULL,"riscv_ecall");
     rt_hw_interrupt_umask(ECALL_IRQ_VECTOR);  
 }
-
-

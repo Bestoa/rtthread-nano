@@ -5,7 +5,8 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2020/06/13     YuZhaorong      
+ * 2020/06/13     YuZhaorong
+ * 2020/11/25     Wu Han
  */
 
 
@@ -20,8 +21,8 @@
 rt_hw_context_switch_to:
     LOAD sp, (a0)
     /* resw ra to mepc */
-    LOAD tp,   0 * 4(sp) // 加载PC指针 到线程指针中 待用 
-    LOAD x1,   1 * REGBYTES(sp) /* x1  - ra     - return address for jumps            */
+    LOAD tp,   0 * 4(sp)                /* Add PC to thread poiner */
+    LOAD x1,   1 * REGBYTES(sp)         /* x1 - ra - return address for jumps */
     
     LOAD x5,   5 * REGBYTES(sp)
     LOAD x6,   6 * REGBYTES(sp)
@@ -52,4 +53,4 @@ rt_hw_context_switch_to:
     LOAD x31, 31 * REGBYTES(sp)
 
     addi sp,  sp, 32 * REGBYTES
-    jr tp // 跳转至线程指针
+    jr tp                               /* jump to thread pointer */

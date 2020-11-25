@@ -7,6 +7,7 @@
  * Date           Author       Notes
  * 2018/10/28     Bernard      The unify RISC-V porting code.
  * 2020/06/05     YuZhaorong   
+ * 2020/11/25     Wu Han       Move console implementation here
  */
 
 #include <rthw.h>
@@ -124,6 +125,7 @@ rt_base_t rt_hw_interrupt_disable(void)
 {
     return riscv_maskirq(0xffffffff);
 }
+
 void rt_hw_interrupt_enable(rt_base_t level)
 {
     riscv_maskirq(level);
@@ -133,7 +135,7 @@ void rt_hw_interrupt_enable(rt_base_t level)
         rt_hw_context_switch_flag =0;
         if((level & 0x0002)==0)
         {
-            /* 判断是否要触发系统中断*/
+            /* trigger system interrupt or not */
            if(rt_thread_switch_interrupt_flag)   
            {
                 __asm("ecall");
@@ -141,6 +143,26 @@ void rt_hw_interrupt_enable(rt_base_t level)
         }
     }
     return;
+}
+
+#define reg_uart_data (*(volatile rt_uint32_t*)0x02000008)
+
+void rt_hw_console_output(const char *str)
+{
+    int i=0;
+    for(i=0;'\0' != str[i];i++)
+    {
+        if(str[i] == '\n')
+        {
+            reg_uart_data = '\r';
+        }
+        reg_uart_data = str[i];
+    }
+}
+
+char rt_hw_console_getchar(void)
+{
+    return (char)((*(volatile int*)0x02000008)&0xFF);
 }
 
 /** shutdown CPU */
