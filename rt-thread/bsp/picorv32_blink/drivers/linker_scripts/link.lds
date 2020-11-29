@@ -10,7 +10,7 @@ means.
 /* starting address needs to be > 0 due to known bug in RISCV/GNU linker */
 MEMORY 
 {
-	rom(rx)  : ORIGIN = 0x00020000, LENGTH =  32k
+  rom(rx)  : ORIGIN = 0x00020000, LENGTH = 32k
   ram(rwx) : ORIGIN = 0x00000000, LENGTH = 16k
 }
 
