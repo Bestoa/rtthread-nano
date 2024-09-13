@@ -67,9 +67,13 @@ _pvstart:
 
 
 _start:
+.option push
+.option norelax
 # Initialize global pointer
 1:  auipc gp, %pcrel_hi(__global_pointer$)
     addi  gp, gp, %pcrel_lo(1b)
+.option pop
+
 # Clear the bss segment
     la      a0, _edata
     la      a1, _end
