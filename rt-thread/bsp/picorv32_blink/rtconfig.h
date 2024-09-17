@@ -7,15 +7,6 @@
 
 #define RT_USING_FINSH
 
-#if defined(__CC_ARM) || defined(__CLANG_ARM)
-#include "RTE_Components.h"
-
-#if defined(RTE_USING_FINSH)
-#define RT_USING_FINSH
-#endif //RTE_USING_FINSH
-
-#endif //(__CC_ARM) || (__CLANG_ARM)
-
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h>Basic Configuration
 // <o>Maximal level of thread priority <8-256>
@@ -46,14 +37,14 @@
 // <h>Debug Configuration
 // <c1>enable kernel debug configuration
 //  <i>Default: enable kernel debug configuration
-//#define RT_DEBUG
+#define RT_DEBUG
 // </c>
 // <o>enable components initialization debug configuration<0-1>
 //  <i>Default: 0
 #define RT_DEBUG_INIT 0
 // <c1>thread stack over flow detect
 //  <i> Diable Thread stack over flow detect
-//#define RT_USING_OVERFLOW_CHECK
+#define RT_USING_OVERFLOW_CHECK
 // </c>
 // </h>
 
@@ -143,7 +134,7 @@
     // <o>the stack of finsh thread <1-4096>
     //  <i>the stack of finsh thread
     //  <i>Default: 4096  (4096Byte)
-    #define FINSH_THREAD_STACK_SIZE     512
+    #define FINSH_THREAD_STACK_SIZE     4096
     // <o>the history lines of finsh thread <1-32>
     //  <i>the history lines of finsh thread
     //  <i>Default: 5

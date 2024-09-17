@@ -8,23 +8,23 @@ means.
 */
 
 /* starting address needs to be > 0 due to known bug in RISCV/GNU linker */
-MEMORY 
+MEMORY
 {
-  rom(rx)  : ORIGIN = 0x00020000, LENGTH = 32k
-  ram(rwx) : ORIGIN = 0x00000000, LENGTH = 16k
+  rom(rx)  : ORIGIN = 0x00000000, LENGTH = 32k
+  ram(rwx) : ORIGIN = 0x40000000, LENGTH = 16k
 }
 
 ENTRY(_pvstart);
 
-SECTIONS 
+SECTIONS
 {
-  .init :
+  .init 0x0:
   {
     . = ALIGN(4);
     *(.text.entry);
   } > rom
 
-  .interrupt 0x20400: 
+  .interrupt 0x400:
   {
     . = ALIGN(4);
     KEEP(*(.text.interrupt));
@@ -41,7 +41,7 @@ SECTIONS
       . = ALIGN(4);
     _edata = .;
   } >ram AT > rom
-  
+
   .bss :
   {
     _bss_start = .;
@@ -51,7 +51,7 @@ SECTIONS
     _bss_end = .;
     _end = .;
   } > ram
-  
+
   .rom :
   {
     . = ALIGN(4);
@@ -66,7 +66,7 @@ SECTIONS
     __vsymtab_start = .;
     KEEP(*(VSymTab))
     __vsymtab_end = .;
-    . = ALIGN(4);	
+    . = ALIGN(4);
     *(.stub .text.* .gnu.linkonce.t.*);
     *(.rodata  .rodata.*);
     *(.*);
@@ -74,8 +74,8 @@ SECTIONS
 
   .stack ORIGIN(ram) + LENGTH(ram) :
   {
-    _riscv_sp = . ; 
-  } > ram 
+    _riscv_sp = . ;
+  } > ram
 }
 
 

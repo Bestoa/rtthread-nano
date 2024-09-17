@@ -5,22 +5,11 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR riscv)
 SET(CMAKE_CROSSCOMPILING 1)
 
-set(tools /opt/riscv32i)
 set(LINKR_FILE ../drivers/linker_scripts/link.lds)
-set(CMAKE_ASM_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
-set(CMAKE_C_COMPILER ${tools}/bin/riscv32-unknown-elf-gcc)
-set(CMAKE_CXX_COMPILER ${tools}/bin/riscv32-unknown-elf-g++)
-set(CMAKE_OBJCOPY ${tools}/bin/riscv32-unknown-elf-objcopy)
-set(CMAKE_OBJDUMP ${tools}/bin/riscv32-unknown-elf-objdump)
 
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+set(CMAKE_C_FLAGS "-MD -Os -Wall -march=rv32im -mabi=ilp32" )
 
-set(CMAKE_C_FLAGS "-MD -Os -Wall" )
-
-set(CMAKE_ASM_FLAGS "-nostdlib" )
+set(CMAKE_ASM_FLAGS "-nostdlib -march=rv32im -mabi=ilp32" )
 set(LD_FLAGS "-ffunction-sections  -nostartfiles -Wl,--gc-sections")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
@@ -67,6 +56,11 @@ set(RISCV_SRC
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
+set(HAVE_FLAG_SEARCH_PATHS_FIRST 0)
+set(CMAKE_ASM_LINK_FLAGS "")
+set(CMAKE_C_LINK_FLAGS "")
+set(CMAKE_CXX_LINK_FLAGS "")
+
 project (${PROJECT_NAME})
 
 include_directories(../../libcpu/risc-v/picorv32
@@ -77,16 +71,18 @@ include_directories(../../libcpu/risc-v/picorv32
 
 add_executable(${PROJECT_NAME}.elf ${RISCV_SRC})
 
-target_link_libraries(${PROJECT_NAME}.elf PRIVATE  -T${LINKR_FILE} ${LD_FLAGS},-Map=${MAP_TARGET})
+target_link_libraries(${PROJECT_NAME}.elf PRIVATE  -T${LINKR_FILE} ${LD_FLAGS},-Map=${MAP_TARGET},--print-memory-usage)
 
+if (NOT APPLE)
 # Remove option -rdynamic which is a bug
 add_custom_command(TARGET ${PROJECT_NAME}.elf PRE_BUILD
         COMMAND sed -i 's/-rdynamic//g' CMakeFiles/${PROJECT_NAME}.elf.dir/link.txt
 )
+endif()
 
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -Obinary ${PROJECT_NAME}.elf ${BIN_TARGET}
+        COMMAND ${CMAKE_OBJCOPY} -O binary ${PROJECT_NAME}.elf ${BIN_TARGET}
         COMMAND ${CMAKE_OBJCOPY} -O verilog ${PROJECT_NAME}.elf ${TMP_TARGET}
-        COMMAND ${CMAKE_OBJDUMP} -S ${PROJECT_NAME}.elf > ${LSS_TARGET}
+        COMMAND ${CMAKE_OBJDUMP} -S -D -x ${PROJECT_NAME}.elf > ${LSS_TARGET}
         COMMENT "Generating ${HEX_TARGET}, ${BIN_TARGET}"
 )
