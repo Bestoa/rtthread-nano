@@ -11,11 +11,8 @@
 #include <stdint.h>
 #include <rthw.h>
 #include <rtthread.h>
+#include "board.h"
 
-#define  TIMER_IRQ_VECTOR   0 
-#define  ECALL_IRQ_VECTOR   1 
-#define  SYSTEM_BUS_VECTOR  2 
-#define  SYSTEM_CORE_CLOCK 10000000l   //  10 MHZ  
 // Holds the system core clock, which is the system clock 
 // frequency supplied to the SysTick timer and the processor 
 // core clock.
@@ -50,6 +47,24 @@ void riscv_timer_handler(int vector, void *param)
 void riscv_ecall_handler(int vector, void *param)
 {
 
+}
+
+void rt_hw_console_output(const char *str)
+{
+    int i = 0;
+    for(i = 0; '\0' != str[i]; i++)
+    {
+        if(str[i] == '\n')
+        {
+            reg_uart_data = '\r';
+        }
+        reg_uart_data = str[i];
+    }
+}
+
+char rt_hw_console_getchar(void)
+{
+    return (char)(reg_uart_data & 0xff);
 }
 
 /**

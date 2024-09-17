@@ -145,26 +145,6 @@ void rt_hw_interrupt_enable(rt_base_t level)
     return;
 }
 
-#define reg_uart_data (*(volatile rt_uint32_t*)0x02000008)
-
-void rt_hw_console_output(const char *str)
-{
-    int i=0;
-    for(i=0;'\0' != str[i];i++)
-    {
-        if(str[i] == '\n')
-        {
-            reg_uart_data = '\r';
-        }
-        reg_uart_data = str[i];
-    }
-}
-
-char rt_hw_console_getchar(void)
-{
-    return (char)((*(volatile int*)0x02000008)&0xFF);
-}
-
 /** shutdown CPU */
 void rt_hw_cpu_shutdown()
 {

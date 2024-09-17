@@ -1,0 +1,4 @@
+1. Change the hard-coding config value in drivers/board.h.
+2. Change the implementation of rt_hw_console_getchar/rt_hw_console_output if necessary.
+3. Change the memory layout and the interrupt handler location in drivers/linker_scripts/link.lds.
+4. Add -march=rv32i or -march=rv32im in both CMAKE_C_FLAGS/CMAKE_ASM_FLAGS if necessary.
