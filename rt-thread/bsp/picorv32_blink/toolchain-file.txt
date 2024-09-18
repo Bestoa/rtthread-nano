@@ -1,0 +1,15 @@
+set(tools /opt/xpack-riscv-none-elf-gcc-13.3.0-1/)
+set(CMAKE_ASM_COMPILER ${tools}/bin/riscv-none-elf-gcc)
+set(CMAKE_C_COMPILER ${tools}/bin/riscv-none-elf-gcc)
+set(CMAKE_CXX_COMPILER ${tools}/bin/riscv-none-elf-g++)
+set(CMAKE_OBJCOPY ${tools}/bin/riscv-none-elf-objcopy)
+set(CMAKE_OBJDUMP ${tools}/bin/riscv-none-elf-objdump)
+
+set(CMAKE_C_COMPILER_TARGET riscv-none-elf)
+set(CMAKE_CXX_COMPILER_TARGET riscv-none-elf)
+set(CMAKE_ASM_COMPILER_TARGET riscv-none-elf)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
